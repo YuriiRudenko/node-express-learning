@@ -1,0 +1,37 @@
+extends ../layouts/main
+block styles
+    link(rel="stylesheet", href="/css/shop/cart.css")
+
+block content
+    if cart && cart.products.length > 0
+        .cart
+            each product in cart.products
+                .cart-item
+                    .cart-item-block.product-index
+                        h1 #{product.index}
+                    .vl
+                    .cart-item-block.product-image
+                        img(src=(product.imageUrl), alt=(product.title))
+                    .vl
+                    .cart-item-block.product-title
+                        h2 #{product.title}
+                    .vl
+                    .cart-item-block.product-price
+                        h2 #{product.quantity}
+                            span.cross x
+                            span $#{product.price}
+                    .vl
+                    .cart-item-block.product-total-price
+                        h2 $#{parseFloat(product.price) * parseFloat(product.quantity) }
+                    .vl
+                    .cart-item-block.product-actions
+                        form(action="/cart/delete", method="POST")
+                            input(type="hidden", name="id", value=(product.id))
+                            button.btn(type="submit") Delete
+
+        hr
+        .summary
+            .total-price.summary-item TOTAL PRICE: $#{cart.totalPrice}
+            .summary-item
+                form.checkout-form(action="/checkout", method="GET")
+                    button.btn.checkout-btn(type="submit") PROCEED TO CHECKOUT

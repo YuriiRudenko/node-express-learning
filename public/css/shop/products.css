@@ -1,0 +1,50 @@
+.grid {
+    display: flex;
+    justify-content: space-around;
+}
+.card {
+    padding: 10px;
+    background-color: #eceaea;
+    justify-items: center;
+    border: 2px solid #c3c2c2;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.card__header {
+
+}
+.product__title {
+    padding: 0;
+    margin: 2px
+}
+.card__image img {
+    width: 150px;
+}
+.card__content {
+
+}
+.product__price {
+    font-size: 30px;
+    padding: 0;
+    margin: 2px
+}
+.product__description {
+    font-size: 20px;
+    padding: 0;
+    margin: 2px
+}
+.card__actions {
+
+}
+.btn {
+    border: 1px solid #a86f4c;
+    color: #a86f4c;
+    margin: 5px;
+}
+.btn:active {
+    border: 1px solid #8c4920;
+    color: #8c4920;
+}
+.form-control input:focus,
+.form-control textarea:focus {
+    outline-color: #d8ecc7;
+}

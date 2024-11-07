@@ -1,0 +1,17 @@
+extends ../layouts/main
+
+block styles
+    link(rel="stylesheet", href="/css/shop/product.css")
+
+block content
+    .parent-center
+        .center-main
+            h1 #{product.title}
+    hr
+    .parent-center
+        .center-main
+            div
+                img(src=(product.imageUrl), alt=(product.title))
+            h2 $#{product.price}
+            p #{product.description}
+            include ../includes/add-to-cart

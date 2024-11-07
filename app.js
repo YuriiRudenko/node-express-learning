@@ -5,7 +5,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
+
+const errorController = require("./controllers/error");
 
 const app = express();
 
@@ -15,10 +16,8 @@ app.set('views', "views");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, "public")));
 app.use('/admin', adminRoutes.routes);
-app.use(shopRoutes);
+app.use(require("./routes/shop"));
 
-app.use("/", (req, res, next) => {
-    res.status(404).sendFile(path.join(rootDir, "views", "404.html"));
-});
+app.use(errorController.error);
 
 app.listen(3000)

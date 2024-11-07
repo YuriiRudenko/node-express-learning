@@ -1,0 +1,21 @@
+extends ../layouts/main.pug
+
+block styles
+    link(rel="stylesheet", href="/css/product.css")
+
+block content
+    form.product-form(action=(path), method="POST")
+        input(type="hidden", name="id", value=(product && product.id))
+        .form-control
+            label(for="title") Title
+            input(type="text", name="title", value=(product && product.title))
+        .form-control
+            label(for="imageUrl") Image URL
+            input(type="text", name="imageUrl", value=(product && product.imageUrl))
+        .form-control
+            label(for="price") Price
+            input(type="number", name="price", step="0.5", value=(product && product.price))
+        .form-control
+            label(for="description") Description
+            input(type="textarea", size="40", name="description", value=(product && product.description))
+        button.btn(type="submit") #{product ? 'Save' : 'Add'}
