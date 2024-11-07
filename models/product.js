@@ -1,18 +1,16 @@
-const fs = require("fs");
-const path = require("path");
-const rootDir = require("../helpers/path");
 const Cart = require("./cart");
+const db = require("../helpers/database");
 
-const FILE_PATH = path.join(rootDir, 'data', 'products.json');
+const SQL = {
+    insert: "INSERT INTO products(title, price, description, imageUrl) VALUES (?, ?, ?, ?)",
+    update: "UPDATE products SET title = ?, price = ?, description = ?, imageUrl = ? WHERE id = ?",
+    find: "SELECT * FROM products WHERE id = ? LIMIT 1",
+    all: "SELECT * FROM products",
+    delete: "DELETE FROM products WHERE id = ?"
+};
 
 const getProducts = (callback) => {
-    fs.readFile(FILE_PATH, (err, fileContent) => {
-        let products = [];
-        if (!err) {
-            products = JSON.parse(fileContent);
-        }
-        return callback(products);
-    })
+    db.exec(SQL.all, [], callback);
 }
 
 module.exports = class Product {
@@ -25,30 +23,20 @@ module.exports = class Product {
     }
 
     save() {
-        getProducts(products => {
-            // const updatedProducts = [...products];
+        const args = [this.title, this.price, this.description, this.imageUrl];
 
-            if (this.id) {
-                const index = products.findIndex(p => p.id === this.id);
-                products[index] = this;
-            } else {
-                this.id = ((Math.max.apply(null, products.map(p => p.id)) ?? 0) + 1).toString();
-                products.push(this);
-            }
-            fs.writeFile(FILE_PATH, JSON.stringify(products), (err) => console.log(err))
-        })
+        if (this.id) {
+            Product.find(this.id, product => {
+                db.exec(SQL.update, [...args, this.id]);
+            })
+        } else {
+            db.exec(SQL.insert, args);
+        }
     }
 
     static delete(id) {
-        getProducts(products => {
-            const index = products.findIndex(p => p.id === id);
-            const product = products[index];
-            products.splice(index, 1);
-            fs.writeFile(FILE_PATH, JSON.stringify(products), (err) => {
-                if (!err) {
-                    Cart.delete(id, product.price);
-                }
-            })
+        Product.find(id, (product) => {
+            db.exec(SQL.delete, [id], () => Cart.delete(product.id, product.price))
         })
     }
 
@@ -57,9 +45,6 @@ module.exports = class Product {
     }
 
     static find(id, callback) {
-        getProducts(products => {
-            const product = products.find(product => product.id === id);
-            callback(product);
-        })
+        db.exec(SQL.find, [id], products => callback(products[0]))
     }
 }
