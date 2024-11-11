@@ -5,35 +5,53 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.getEditProduct = (req, res, next) => {
-    Product.find(req.params.id, (product) => {
+    Product.findByPk(req.params.id).then(product => {
         if (product) {
             res.render('admin/product-form', { product: product, docTitle: 'Edit Product', path: '/admin/edit-product' });
         } else {
             res.status(404).redirect('/not-found');
         }
-    })
+    }).catch(err => console.log(err));
 }
 
 exports.postEditProduct = (req, res, next) => {
-    const product = new Product(req.body.id, req.body.title, req.body.imageUrl, req.body.description, req.body.price);
-    product.save();
-    res.redirect("/admin/products");
+    Product.findByPk(req.body.id).then(product => {
+        product.title = req.body.title;
+        product.price = req.body.price;
+        product.description = req.body.description;
+        product.imageUrl = req.body.imageUrl;
+        return product.save();
+    })
+    .then(result => {
+        res.redirect("/admin/products");
+    })
+    .catch(err => console.log(err));
 }
 
 exports.deleteProduct = (req, res, next) => {
-    Product.delete(req.body.id);
-    res.redirect("/admin/products");
+    Product.findByPk(req.body.id).then((product) => {
+        return product.destroy();
+    }).then(result => {
+        res.redirect("/admin/products");
+    }).catch(err => console.log(err));
 }
 
 exports.postAddProduct = (req, res, next) => {
-    const product = new Product(null, req.body.title, req.body.imageUrl, req.body.description, req.body.price);
-    product.save();
-    res.redirect("/admin/products");
+    req.user.createProduct({
+        title: req.body.title,
+        price: req.body.price,
+        description: req.body.description,
+        imageUrl: req.body.imageUrl,
+    }).then(result => {
+        res.redirect("/admin/products");
+    }).catch(err => {
+        console.log(err);
+    });
 }
 
 exports.getProducts = (req, res, next) => {
-    const callback = (products) => {
+    const callback =
+    Product.findAll().then((products) => {
         res.render("admin/products", { docTitle: "Admin Products", products: products, path: "/admin/products" })
-    }
-    Product.fetchAll(callback);
+    }).catch(err => console.log(err));
 }

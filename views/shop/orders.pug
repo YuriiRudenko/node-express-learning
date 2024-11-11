@@ -1,5 +1,32 @@
 extends ../layouts/main
+block styles
+    link(rel="stylesheet", href="/css/shop/cart.css")
 
 block content
-    main
-        h1 Nothing here
+    if orders.length > 0
+        each order in orders
+            h1 Order ##{order.id}
+
+            if order.products.length > 0
+                .cart
+                    each product, idx in order.products
+                        .cart-item
+                            .cart-item-block.product-index
+                                h1 #{idx + 1}
+                            .vl
+                            .cart-item-block.product-image
+                                img(src=(product.imageUrl), alt=(product.title))
+                            .vl
+                            .cart-item-block.product-title
+                                h2 #{product.title}
+                            .vl
+                            .cart-item-block.product-price
+                                h2 #{product.orderItem.quantity}
+                                    span.cross x
+                                    span $#{product.price}
+                            .vl
+                            .cart-item-block.product-total-price
+                                h2 $#{(product.price * product.orderItem.quantity).toFixed(2)}
+                            .vl
+
+                hr

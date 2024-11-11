@@ -3,12 +3,12 @@ block styles
     link(rel="stylesheet", href="/css/shop/cart.css")
 
 block content
-    if cart && cart.products.length > 0
+    if products.length > 0
         .cart
-            each product in cart.products
+            each product, idx in products
                 .cart-item
                     .cart-item-block.product-index
-                        h1 #{product.index}
+                        h1 #{idx + 1}
                     .vl
                     .cart-item-block.product-image
                         img(src=(product.imageUrl), alt=(product.title))
@@ -17,12 +17,12 @@ block content
                         h2 #{product.title}
                     .vl
                     .cart-item-block.product-price
-                        h2 #{product.quantity}
+                        h2 #{product.cartItem.quantity}
                             span.cross x
                             span $#{product.price}
                     .vl
                     .cart-item-block.product-total-price
-                        h2 $#{parseFloat(product.price) * parseFloat(product.quantity) }
+                        h2 $#{(product.price * product.cartItem.quantity).toFixed(2)}
                     .vl
                     .cart-item-block.product-actions
                         form(action="/cart/delete", method="POST")
@@ -31,7 +31,7 @@ block content
 
         hr
         .summary
-            .total-price.summary-item TOTAL PRICE: $#{cart.totalPrice}
+            .total-price.summary-item TOTAL PRICE: $#{totalPrice.toFixed(2)}
             .summary-item
-                form.checkout-form(action="/checkout", method="GET")
-                    button.btn.checkout-btn(type="submit") PROCEED TO CHECKOUT
+                form.order-form(action="/create-order", method="POST")
+                    button.btn.order-btn(type="submit") PROCEED TO ORDER
