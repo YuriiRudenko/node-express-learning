@@ -5,7 +5,7 @@ block styles
 
 block content
     form.product-form(action=(path), method="POST")
-        input(type="hidden", name="id", value=(product && product.id))
+        input(type="hidden", name="id", value=(product && product._id))
         .form-control
             label(for="title") Title
             input(type="text", name="title", value=(product && product.title))

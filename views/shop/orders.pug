@@ -5,11 +5,11 @@ block styles
 block content
     if orders.length > 0
         each order in orders
-            h1 Order ##{order.id}
+            h1 Order ##{order._id}
 
-            if order.products.length > 0
+            if order.items.length > 0
                 .cart
-                    each product, idx in order.products
+                    each product, idx in order.items
                         .cart-item
                             .cart-item-block.product-index
                                 h1 #{idx + 1}
@@ -21,12 +21,12 @@ block content
                                 h2 #{product.title}
                             .vl
                             .cart-item-block.product-price
-                                h2 #{product.orderItem.quantity}
+                                h2 #{product.quantity}
                                     span.cross x
                                     span $#{product.price}
                             .vl
                             .cart-item-block.product-total-price
-                                h2 $#{(product.price * product.orderItem.quantity).toFixed(2)}
+                                h2 $#{product.totalPrice.toFixed(2)}
                             .vl
 
                 hr

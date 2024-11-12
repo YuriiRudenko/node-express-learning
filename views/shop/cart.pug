@@ -3,9 +3,9 @@ block styles
     link(rel="stylesheet", href="/css/shop/cart.css")
 
 block content
-    if products.length > 0
+    if cart && cart.products && cart.products.length > 0
         .cart
-            each product, idx in products
+            each product, idx in cart.products
                 .cart-item
                     .cart-item-block.product-index
                         h1 #{idx + 1}
@@ -17,12 +17,12 @@ block content
                         h2 #{product.title}
                     .vl
                     .cart-item-block.product-price
-                        h2 #{product.cartItem.quantity}
+                        h2 #{product.quantity}
                             span.cross x
                             span $#{product.price}
                     .vl
                     .cart-item-block.product-total-price
-                        h2 $#{(product.price * product.cartItem.quantity).toFixed(2)}
+                        h2 $#{product.totalPrice.toFixed(2)}
                     .vl
                     .cart-item-block.product-actions
                         form(action="/cart/delete", method="POST")
@@ -31,7 +31,7 @@ block content
 
         hr
         .summary
-            .total-price.summary-item TOTAL PRICE: $#{totalPrice.toFixed(2)}
+            .total-price.summary-item TOTAL PRICE: $#{cart.totalPrice.toFixed(2)}
             .summary-item
                 form.order-form(action="/create-order", method="POST")
                     button.btn.order-btn(type="submit") PROCEED TO ORDER
