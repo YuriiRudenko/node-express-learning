@@ -9,24 +9,24 @@ block content
 
             if order.items.length > 0
                 .cart
-                    each product, idx in order.items
+                    each item, idx in order.items
                         .cart-item
                             .cart-item-block.product-index
                                 h1 #{idx + 1}
                             .vl
                             .cart-item-block.product-image
-                                img(src=(product.imageUrl), alt=(product.title))
+                                img(src=(item.imageUrl), alt=(item.title))
                             .vl
                             .cart-item-block.product-title
-                                h2 #{product.title}
+                                h2 #{item.title}
                             .vl
                             .cart-item-block.product-price
-                                h2 #{product.quantity}
+                                h2 #{item.quantity}
                                     span.cross x
-                                    span $#{product.price}
+                                    span $#{item.price}
                             .vl
                             .cart-item-block.product-total-price
-                                h2 $#{product.totalPrice.toFixed(2)}
+                                h2 $#{((item.totalPrice ? item.totalPrice : 0) * item.quantity).toFixed(2)}
                             .vl
 
                 hr

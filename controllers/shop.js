@@ -1,9 +1,9 @@
 const Product = require("../models/product");
-// const Order = require("../models/order");
+const Order = require("../models/order");
 
 exports.getProducts = (req, res, next) => {
     Product
-        .all()
+        .find()
         .then(products => {
             res.render('shop/products', {products: products, docTitle: 'Products', path: '/products'});
         })
@@ -14,7 +14,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
     Product
-        .find(req.params.id)
+        .findById(req.params.id)
         .then(product => {
             res.render('shop/product-details', { product: product, docTitle: 'product.title', path: '/product-details' });
         })
@@ -23,29 +23,32 @@ exports.getProduct = (req, res, next) => {
 
 exports.getIndex = (req, res, next) => {
     Product
-        .all()
+        .find()
         .then(products => {
-            res.render('shop/index', { products: products, docTitle: 'Shop', path: '/' });        })
+            res.render('shop/index', { products: products, docTitle: 'Shop', path: '/' });
+        })
         .catch(err => {
-            console.log(err);
+                console.log(err);
         });
 }
 
 exports.getCart = (req, res, next) => {
     req.user
-        .getCart()
-        .then(cart => {
-            res.render('shop/cart', { path: "/cart", docTitle: "Cart", cart: cart })
+        .populate('cart.items.productId')
+        .then(usr => {
+            console.log(usr.cart.items);
+            const totalPrice = usr.cart.items.map(i => i.quantity * i.productId.price).reduce((a, b) => a + b, 0)
+            res.render('shop/cart', { path: "/cart", docTitle: "Cart", cart: usr.cart, totalPrice: totalPrice })
         })
         .catch(e => {
             console.log(e);
-            res.redirect("/");
         });
 }
 
 exports.getOrders = (req, res, next) => {
-    req.user
-        .getOrders()
+    Order
+        .find({ userId: req.user })
+        .populate('items.productId')
         .then((orders) => {
             res.render('shop/orders', { path: '/orders', docTitle: 'Orders', orders: orders });
         })
@@ -63,7 +66,7 @@ exports.postOrder = (req, res, next) => {
 
 exports.addToCart = (req, res, next) => {
     Product
-        .find(req.body.id)
+        .findById(req.body.id)
         .then(product => {
             return req.user.addToCart(product);
         })
